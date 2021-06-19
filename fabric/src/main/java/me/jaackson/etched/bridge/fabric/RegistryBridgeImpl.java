@@ -7,6 +7,7 @@ import me.jaackson.etched.bridge.RegistryBridge;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
@@ -19,6 +20,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -144,5 +146,10 @@ public class RegistryBridgeImpl {
     @Environment(EnvType.CLIENT)
     public static <M extends AbstractContainerMenu, S extends Screen & MenuAccess<M>> void registerScreenFactory(MenuType<M> type, RegistryBridge.ScreenFactory<M, S> object) {
         ScreenRegistry.register(type, object::create);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void registerLayerDefinition(ModelLayerLocation layer, RegistryBridge.LayerFactory factory) {
+        EntityModelLayerRegistry.registerModelLayer(layer, factory::create);
     }
 }

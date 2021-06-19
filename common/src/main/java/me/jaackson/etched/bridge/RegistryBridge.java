@@ -7,6 +7,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -29,6 +31,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
@@ -122,6 +125,12 @@ public final class RegistryBridge {
         Platform.safeAssertionError();
     }
 
+    @ExpectPlatform
+    @Environment(EnvType.CLIENT)
+    public static void registerLayerDefinition(ModelLayerLocation layer, LayerFactory factory) {
+        Platform.safeAssertionError();
+    }
+
     public static Supplier<Block> registerBlock(String name, Supplier<Block> block, Item.Properties properties) {
         return registerBlock(name, block, blockSupplier -> new BlockItem(blockSupplier.get(), properties));
     }
@@ -138,7 +147,14 @@ public final class RegistryBridge {
     }
 
     @FunctionalInterface
+    @Environment(EnvType.CLIENT)
     public interface ScreenFactory<M extends AbstractContainerMenu, S extends Screen & MenuAccess<M>> {
         S create(M menu, Inventory inventory, Component title);
+    }
+
+    @FunctionalInterface
+    @Environment(EnvType.CLIENT)
+    public interface LayerFactory {
+        LayerDefinition create();
     }
 }

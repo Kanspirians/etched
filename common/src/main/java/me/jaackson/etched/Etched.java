@@ -13,6 +13,8 @@ import me.jaackson.etched.common.network.ServerboundSetEtchingUrlPacket;
 import me.jaackson.etched.common.network.handler.EtchedClientPlayHandler;
 import me.jaackson.etched.common.network.handler.EtchedServerPlayHandler;
 import net.minecraft.Util;
+import net.minecraft.client.model.MinecartModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
@@ -97,7 +99,11 @@ public class Etched {
         RegistryBridge.registerScreenFactory(EtchedRegistry.ALBUM_JUKEBOX_MENU.get(), AlbumJukeboxScreen::new);
         RegistryBridge.registerBlockRenderType(EtchedRegistry.ETCHING_TABLE.get(), RenderType.cutout());
         RegistryBridge.registerItemOverride(EtchedRegistry.ETCHED_MUSIC_DISC.get(), new ResourceLocation(Etched.MOD_ID, "pattern"), (stack, level, livingEntity, i) -> (float) EtchedMusicDiscItem.getPattern(stack).ordinal());
-        RegistryBridge.registerEntityRenderer(EtchedRegistry.JUKEBOX_MINECART_ENTITY.get(), context -> new MinecartRenderer<>(context, ModelLayers.MINECART)); // TODO: Create custom ModelLayer
+
+        // this sucks
+        ModelLayerLocation layer = new ModelLayerLocation(new ResourceLocation(Etched.MOD_ID, "jukebox_minecart"), "main");
+        RegistryBridge.registerLayerDefinition(layer, MinecartModel::createBodyLayer);
+        RegistryBridge.registerEntityRenderer(EtchedRegistry.JUKEBOX_MINECART_ENTITY.get(), context -> new MinecartRenderer<>(context, layer));
     }
 
     static class ItemTrade implements VillagerTrades.ItemListing {
