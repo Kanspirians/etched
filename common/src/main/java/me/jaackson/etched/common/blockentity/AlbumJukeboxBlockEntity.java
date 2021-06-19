@@ -9,6 +9,7 @@ import me.shedaniel.architectury.annotations.PlatformOnly;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -36,8 +37,8 @@ public class AlbumJukeboxBlockEntity extends RandomizableContainerBlockEntity im
     private int playingIndex;
     private ItemStack playingStack;
 
-    public AlbumJukeboxBlockEntity() {
-        super(EtchedRegistry.ALBUM_JUKEBOX_BE.get());
+    public AlbumJukeboxBlockEntity(BlockPos pos, BlockState state) {
+        super(EtchedRegistry.ALBUM_JUKEBOX_BE.get(), pos, state);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         this.playingIndex = -1;
         this.playingStack = ItemStack.EMPTY;
@@ -50,8 +51,8 @@ public class AlbumJukeboxBlockEntity extends RandomizableContainerBlockEntity im
     }
 
     @Override
-    public void load(BlockState state, CompoundTag hbt) {
-        super.load(state, hbt);
+    public void load(CompoundTag hbt) {
+        super.load(hbt);
 
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(hbt))
@@ -71,7 +72,7 @@ public class AlbumJukeboxBlockEntity extends RandomizableContainerBlockEntity im
 
     @PlatformOnly(PlatformOnly.FORGE)
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        this.load(this.getBlockState(), pkt.getTag());
+        this.load(pkt.getTag());
     }
 
     @Override

@@ -12,7 +12,6 @@ import me.jaackson.etched.common.block.AlbumJukeboxBlock;
 import me.jaackson.etched.common.blockentity.AlbumJukeboxBlockEntity;
 import me.jaackson.etched.common.entity.MinecartJukebox;
 import me.jaackson.etched.common.item.EtchedMusicDiscItem;
-import me.jaackson.etched.common.network.ClientboundAddMinecartJukeboxPacket;
 import me.jaackson.etched.common.network.ClientboundInvalidEtchUrlPacket;
 import me.jaackson.etched.common.network.ClientboundPlayMinecartJukeboxMusicPacket;
 import me.jaackson.etched.common.network.ClientboundPlayMusicPacket;
@@ -79,23 +78,6 @@ public class EtchedClientPlayHandler {
                 for (LivingEntity livingEntity : level.getEntitiesOfClass(LivingEntity.class, new AABB(pos).inflate(3.0D)))
                     livingEntity.setRecordPlayingNearby(pos, false);
         })));
-    }
-
-    public static void handleAddMinecartJukeboxPacket(ClientboundAddMinecartJukeboxPacket pkt) {
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null)
-            return;
-
-        MinecartJukebox entity = new MinecartJukebox(level, pkt.getX(), pkt.getY(), pkt.getZ());
-        int i = pkt.getId();
-        entity.setPacketCoordinates(pkt.getX(), pkt.getY(), pkt.getZ());
-        entity.moveTo(pkt.getX(), pkt.getY(), pkt.getZ());
-        entity.xRot = (float) (pkt.getxRot() * 360) / 256.0F;
-        entity.yRot = (float) (pkt.getyRot() * 360) / 256.0F;
-        entity.setId(i);
-        entity.setUUID(pkt.getUUID());
-        level.putNonPlayerEntity(i, entity);
-        Minecraft.getInstance().getSoundManager().play(new MinecartSoundInstance(entity));
     }
 
     public static void handlePlayMinecartJukeboxPacket(ClientboundPlayMinecartJukeboxMusicPacket pkt) {

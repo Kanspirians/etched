@@ -19,21 +19,27 @@ import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -104,9 +110,20 @@ public class RegistryBridgeImpl {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Environment(EnvType.CLIENT)
     public static void registerItemOverride(Item item, ResourceLocation resourceLocation, ItemPropertyFunction itemPropertyFunction) {
-        FabricModelPredicateProviderRegistry.register(item, resourceLocation, itemPropertyFunction);
+        FabricModelPredicateProviderRegistry.register(item, resourceLocation, new ClampedItemPropertyFunction() {
+            @Override
+            public float call(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
+                return itemPropertyFunction.call(itemStack, clientLevel, livingEntity, i);
+            }
+
+            @Override
+            public float unclampedCall(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int i) {
+                return 0;
+            }
+        });
     }
 
     @Environment(EnvType.CLIENT)
@@ -115,8 +132,8 @@ public class RegistryBridgeImpl {
     }
 
     @Environment(EnvType.CLIENT)
-    public static <T extends Entity> void registerEntityRenderer(EntityType<T> entityType, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {
-        EntityRendererRegistry.INSTANCE.register(entityType, (dispatcher, context) -> factory.apply(dispatcher));
+    public static <T extends Entity> void registerEntityRenderer(EntityType<T> entityType, EntityRendererProvider<T> factory) {
+        EntityRendererRegistry.INSTANCE.register(entityType, factory);
     }
 
     @Environment(EnvType.CLIENT)

@@ -125,7 +125,7 @@ public class EtchingMenu extends AbstractContainerMenu {
             }
 
             @Override
-            public ItemStack onTake(Player player, ItemStack stack) {
+            public void onTake(Player player, ItemStack stack) {
                 EtchingMenu.this.discSlot.remove(1);
                 EtchingMenu.this.labelSlot.remove(1);
                 if (!EtchingMenu.this.discSlot.hasItem() || !EtchingMenu.this.labelSlot.hasItem()) {
@@ -143,7 +143,7 @@ public class EtchingMenu extends AbstractContainerMenu {
                     }
 
                 });
-                return super.onTake(player, stack);
+                super.onTake(player, stack);
             }
         });
 
@@ -177,7 +177,7 @@ public class EtchingMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player player) {
         super.removed(player);
-        this.access.execute((level, pos) -> this.clearContainer(player, level, this.input));
+        this.access.execute((level, pos) -> this.clearContainer(player, this.input));
     }
 
     @Override
@@ -200,7 +200,7 @@ public class EtchingMenu extends AbstractContainerMenu {
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack itemStack2 = slot.getItem();
             itemStack = itemStack2.copy();
             if (index < 3) {

@@ -10,6 +10,8 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -89,6 +91,7 @@ public final class RegistryBridge {
         Platform.safeAssertionError();
     }
 
+    @SuppressWarnings("deprecation")
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
     public static void registerItemOverride(Item item, ResourceLocation resourceLocation, ItemPropertyFunction itemPropertyFunction) {
@@ -103,7 +106,7 @@ public final class RegistryBridge {
 
     @ExpectPlatform
     @Environment(EnvType.CLIENT)
-    public static <T extends Entity> void registerEntityRenderer(EntityType<T> entityType, Function<EntityRenderDispatcher, EntityRenderer<T>> factory) {
+    public static <T extends Entity> void registerEntityRenderer(EntityType<T> entityType, EntityRendererProvider<T> factory) {
         Platform.safeAssertionError();
     }
 

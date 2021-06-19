@@ -15,7 +15,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -71,7 +70,8 @@ public class EtchingScreen extends AbstractContainerScreen<EtchingMenu> implemen
             this.urlTicks = 8;
         });
         this.url.setCanLoseFocus(true);
-        this.children.add(this.url);
+        this.addWidget(this.url);
+
         this.menu.addSlotListener(this);
     }
 
@@ -102,12 +102,6 @@ public class EtchingScreen extends AbstractContainerScreen<EtchingMenu> implemen
     }
 
     @Override
-    public void refreshContainer(AbstractContainerMenu abstractContainerMenu, NonNullList<ItemStack> nonNullList) {
-        this.slotChanged(abstractContainerMenu, 0, abstractContainerMenu.getSlot(0).getItem());
-        this.slotChanged(abstractContainerMenu, 1, abstractContainerMenu.getSlot(1).getItem());
-    }
-
-    @Override
     public void slotChanged(AbstractContainerMenu abstractContainerMenu, int slot, ItemStack stack) {
         if (slot == 0) {
             if (this.discStack.isEmpty() && !stack.isEmpty())
@@ -130,7 +124,7 @@ public class EtchingScreen extends AbstractContainerScreen<EtchingMenu> implemen
     }
 
     @Override
-    public void setContainerData(AbstractContainerMenu abstractContainerMenu, int index, int value) {
+    public void dataChanged(AbstractContainerMenu abstractContainerMenu, int index, int value) {
     }
 
     @Override
@@ -165,7 +159,7 @@ public class EtchingScreen extends AbstractContainerScreen<EtchingMenu> implemen
     protected void renderBg(PoseStack poseStack, float f, int mouseX, int mouseY) {
         this.renderBackground(poseStack);
 
-        this.minecraft.getTextureManager().bind(TEXTURE);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         if ((!this.url.getValue().isEmpty() && !EtchedMusicDiscItem.isValidURL(this.url.getValue())) || !this.invalidReason.isEmpty() || (this.discStack.getItem() != EtchedRegistry.ETCHED_MUSIC_DISC.get() && ((!this.discStack.isEmpty() && this.labelStack.isEmpty()) || (this.discStack.isEmpty() && !this.labelStack.isEmpty()))))
             this.blit(poseStack, this.leftPos + 83, this.topPos + 44, 0, 226, 27, 17);
@@ -176,7 +170,7 @@ public class EtchingScreen extends AbstractContainerScreen<EtchingMenu> implemen
             for (int index = 0; index < 6; index++) {
                 int x = this.leftPos + 46 + (index * 14);
                 int y = this.topPos + 65;
-                this.minecraft.getTextureManager().bind(TEXTURE);
+                RenderSystem.setShaderTexture(0, TEXTURE);
 
                 int u = index == this.menu.getLabelIndex() ? 14 : mouseX >= x && mouseY >= y && mouseX < x + 14 && mouseY < y + 14 ? 28 : 0;
                 this.blit(poseStack, x, y, u, 212, 14, 14);
@@ -193,13 +187,14 @@ public class EtchingScreen extends AbstractContainerScreen<EtchingMenu> implemen
         int labelColor = this.labelStack.getItem() instanceof MusicLabelItem ? ((MusicLabelItem) this.labelStack.getItem()).getColor(this.labelStack) : 0xFFFFFF;
 
         if (pattern.isColorable())
-            RenderSystem.color3f((float) (labelColor >> 16 & 255) / 255.0F, (float) (labelColor >> 8 & 255) / 255.0F, (float) (labelColor & 255) / 255.0F);
-        RenderSystem.alphaFunc(GL_EQUAL, 1);
-        RenderSystem.enableAlphaTest();
-        Minecraft.getInstance().getTextureManager().bind(pattern.getTexture());
+            RenderSystem.setShaderColor((float) (labelColor >> 16 & 255) / 255.0F, (float) (labelColor >> 8 & 255) / 255.0F, (float) (labelColor & 255) / 255.0F, 1.0F);
+//        RenderSystem.alphaFunc(GL_EQUAL, 1);
+//        RenderSystem.enableAlphaTest();
+        RenderSystem.setShaderTexture(0, pattern.getTexture());
         Gui.blit(poseStack, x, y, 1, 1, 14, 14, 16, 16);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
+//        RenderSystem.disableAlphaTest();
+        //  TODO: Fix alpha
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
     }
 
     @Override
@@ -209,7 +204,7 @@ public class EtchingScreen extends AbstractContainerScreen<EtchingMenu> implemen
                 int x = this.leftPos + 46 + (index * 14);
                 int y = this.topPos + 65;
 
-                if (mouseX >= x && mouseY >= y && mouseX < x + 14 && mouseY < y + 14 && this.menu.getLabelIndex() != index) {
+                if (mouseX >= x && mouseY >= y && mouseX < x + 14 && mouseY < y + 14 && this.menu.getLabelIndex() != index && this.menu.clickMenuButton(this.minecraft.player, index)) {
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, index);
                     return true;

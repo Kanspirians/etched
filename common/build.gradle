@@ -1,5 +1,6 @@
 architectury {
-    common()
+//    common() TODO: Forge
+    common(false)
 }
 
 loom {

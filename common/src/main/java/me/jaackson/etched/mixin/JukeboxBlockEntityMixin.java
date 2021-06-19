@@ -1,6 +1,7 @@
 package me.jaackson.etched.mixin;
 
 import me.jaackson.etched.common.item.EtchedMusicDiscItem;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
@@ -32,8 +33,8 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Wor
     @Unique
     private boolean inserting;
 
-    public JukeboxBlockEntityMixin(BlockEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
+    public JukeboxBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     private void startPlaying(ItemStack stack) {

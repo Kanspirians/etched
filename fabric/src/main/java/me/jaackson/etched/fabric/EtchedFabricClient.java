@@ -20,7 +20,7 @@ public class EtchedFabricClient implements ClientModInitializer {
         Etched.clientPostInit();
 
         ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
-            if (result.getType() == HitResult.Type.ENTITY && player.abilities.instabuild) {
+            if (result.getType() == HitResult.Type.ENTITY && player.getAbilities().instabuild) {
                 Entity entity = ((EntityHitResult) result).getEntity();
                 if (entity instanceof MinecartJukebox)
                     return ((MinecartJukebox) entity).getCartItem();

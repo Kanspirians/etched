@@ -3,11 +3,9 @@ package me.jaackson.etched.common.entity;
 import me.jaackson.etched.EtchedRegistry;
 import me.jaackson.etched.bridge.NetworkBridge;
 import me.jaackson.etched.common.item.EtchedMusicDiscItem;
-import me.jaackson.etched.common.network.ClientboundAddMinecartJukeboxPacket;
 import me.jaackson.etched.common.network.ClientboundPlayMinecartJukeboxMusicPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -41,18 +39,15 @@ public class MinecartJukebox extends AbstractMinecart implements WorldlyContaine
     private static final int[] SLOTS = {0};
 
     private ItemStack record;
-    private boolean dropEquipment;
 
     public MinecartJukebox(EntityType<?> entityType, Level level) {
         super(entityType, level);
         this.record = ItemStack.EMPTY;
-        this.dropEquipment = true;
     }
 
     public MinecartJukebox(Level level, double d, double e, double f) {
         super(EtchedRegistry.JUKEBOX_MINECART_ENTITY.get(), level, d, e, f);
         this.record = ItemStack.EMPTY;
-        this.dropEquipment = true;
     }
 
     private void startPlaying(ItemStack stack, boolean restart) {
@@ -127,18 +122,11 @@ public class MinecartJukebox extends AbstractMinecart implements WorldlyContaine
         }
     }
 
-    @Nullable
     @Override
-    public Entity changeDimension(ServerLevel level) {
-        this.dropEquipment = false;
-        return super.changeDimension(level);
-    }
-
-    @Override
-    public void remove() {
-        if (!this.level.isClientSide() && this.dropEquipment)
+    public void remove(RemovalReason removalReason) {
+        if (!this.level.isClientSide() && removalReason.shouldDestroy())
             Containers.dropContents(this.level, this, this);
-        super.remove();
+        super.remove(removalReason);
     }
 
     @Override
@@ -162,11 +150,6 @@ public class MinecartJukebox extends AbstractMinecart implements WorldlyContaine
         return Blocks.JUKEBOX.defaultBlockState().setValue(JukeboxBlock.HAS_RECORD, this.entityData.get(DATA_ID_HAS_RECORD));
     }
 
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkBridge.toVanillaPacket(new ClientboundAddMinecartJukeboxPacket(this), true);
-    }
-
     public ItemStack getCartItem() {
         return new ItemStack(EtchedRegistry.JUKEBOX_MINECART.get());
     }
@@ -175,7 +158,6 @@ public class MinecartJukebox extends AbstractMinecart implements WorldlyContaine
     public Type getMinecartType() {
         return Type.SPAWNER;
     }
-
 
     @Override
     public int[] getSlotsForFace(Direction side) {

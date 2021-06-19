@@ -6,6 +6,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Mixin(ClientPacketListener.class)
 public class ClientPacketListenerMixin {
 
+    @Final
     @Shadow
     private Minecraft minecraft;
 
@@ -26,6 +28,6 @@ public class ClientPacketListenerMixin {
         BlockEntity blockEntity = Objects.requireNonNull(this.minecraft.level).getBlockEntity(blockpos);
 
         if (blockEntity instanceof AlbumJukeboxBlockEntity)
-            blockEntity.load(this.minecraft.level.getBlockState(blockpos), pkt.getTag());
+            blockEntity.load(pkt.getTag());
     }
 }
