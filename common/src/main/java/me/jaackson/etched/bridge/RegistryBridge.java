@@ -119,6 +119,12 @@ public final class RegistryBridge {
         Platform.safeAssertionError();
     }
 
+    @ExpectPlatform
+    @Environment(EnvType.CLIENT)
+    public static void registerModel(ResourceLocation model) {
+        Platform.safeAssertionError();
+    }
+
     public static Supplier<Block> registerBlock(String name, Supplier<Block> block, Item.Properties properties) {
         return registerBlock(name, block, blockSupplier -> new BlockItem(blockSupplier.get(), properties));
     }
@@ -134,6 +140,7 @@ public final class RegistryBridge {
         T create(int id, Inventory inventory);
     }
 
+    @Environment(EnvType.CLIENT)
     @FunctionalInterface
     public interface ScreenFactory<M extends AbstractContainerMenu, S extends Screen & MenuAccess<M>> {
         S create(M menu, Inventory inventory, Component title);

@@ -7,6 +7,7 @@ import me.jaackson.etched.bridge.RegistryBridge;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
@@ -127,5 +128,10 @@ public class RegistryBridgeImpl {
     @Environment(EnvType.CLIENT)
     public static <M extends AbstractContainerMenu, S extends Screen & MenuAccess<M>> void registerScreenFactory(MenuType<M> type, RegistryBridge.ScreenFactory<M, S> object) {
         ScreenRegistry.register(type, object::create);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void registerModel(ResourceLocation model) {
+        ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> out.accept(model));
     }
 }

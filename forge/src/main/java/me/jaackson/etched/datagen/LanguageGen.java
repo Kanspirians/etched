@@ -19,6 +19,7 @@ public class LanguageGen extends LanguageProvider {
         this.addItem(EtchedRegistry.ETCHED_MUSIC_DISC, "Etched Music Disc");
         this.addItem(EtchedRegistry.MUSIC_LABEL, "Music Label");
         this.addItem(EtchedRegistry.JUKEBOX_MINECART, "Minecart with Jukebox");
+        this.addItem(EtchedRegistry.BOOMBOX, "Boombox");
         this.add("item." + Etched.MOD_ID + ".etched_music_disc.sound_cloud", "Provided by SoundCloud");
         this.add("container." + Etched.MOD_ID + ".etching_table", "Etching Table");
         this.add("container." + Etched.MOD_ID + ".album_jukebox", "Album Jukebox");

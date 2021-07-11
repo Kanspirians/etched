@@ -32,10 +32,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -137,5 +138,10 @@ public class RegistryBridgeImpl {
     @OnlyIn(Dist.CLIENT)
     public static <M extends AbstractContainerMenu, S extends Screen & MenuAccess<M>> void registerScreenFactory(MenuType<M> type, RegistryBridge.ScreenFactory<M, S> object) {
         MenuScreens.register(type, object::create);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void registerModel(ResourceLocation model) {
+        FMLJavaModLoadingContext.get().getModEventBus().<ModelRegistryEvent>addListener(e -> ModelLoader.addSpecialModel(model));
     }
 }
