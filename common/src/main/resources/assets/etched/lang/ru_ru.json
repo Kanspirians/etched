@@ -1,0 +1,21 @@
+{
+  "block.etched.album_jukebox": "Музыкальный автомат",
+  "block.etched.etching_table": "Стол гравировки",
+  "container.etched.album_jukebox": "Музыкальный автомат",
+  "container.etched.etching_table": "Стол гравировки",
+  "entity.minecraft.villager.bard": "Бард",
+  "entity.minecraft.villager.etched.bard": "Бард",
+  "item.etched.blank_music_disc": "Пустая музыкальная пластинка",
+  "item.etched.etched_music_disc": "Выгравированная музыкальная пластинка",
+  "item.etched.etched_music_disc.sound_cloud": "Предоставлено SoundCloud",
+  "item.etched.jukebox_minecart": "Вагонетка с музыкальным автоматом",
+  "item.etched.music_label": "Музыкальная этикетка",
+  "record.etched.downloadFail": "Не удалось загрузить %s",
+  "record.etched.downloadProgress": "Загрузка (%s MB / %s MB): %s",
+  "record.etched.loading": "Загрузка %s",
+  "screen.etched.etching_table.error.invalid_url": "Невозможно выгравировать недействительный url",
+  "screen.etched.etching_table.error.missing_disc": "Для гравировки требуется пустой диск",
+  "screen.etched.etching_table.error.missing_label": "Музыкальная этикетка обязательна для травления",
+  "sound_cloud.requesting": "Запрос из SoundCloud...",
+  "subtitles.etched.ui.etching_table.take_result": "Используется стол для травления"
+}
